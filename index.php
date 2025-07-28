@@ -6,13 +6,13 @@ if (isLoggedIn()) {
     $redirectPage = '';
     switch ($_SESSION['role']) {
         case 'admin':
-            $redirectPage = '/mini%203ii/test2/views/admin/dashboard.php';
+            $redirectPage = '/views/admin/dashboard.php';
             break;
         case 'teacher':
-            $redirectPage = '/mini%203ii/test2/views/teacher/dashboard.php';
+            $redirectPage = '/views/teacher/dashboard.php';
             break;
         case 'student':
-            $redirectPage = '/mini%203ii/test2/views/student/dashboard.php';
+            $redirectPage = '/views/student/dashboard.php';
             break;
     }
     header("Location: $redirectPage");
