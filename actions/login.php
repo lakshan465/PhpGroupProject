@@ -6,13 +6,13 @@ if (isLoggedIn()) {
     $redirectPage = '';
     switch ($_SESSION['role']) {
         case 'admin':
-            $redirectPage = 'Mini%Project%203ii/PhpGroupProject/views/admin/dashboard.php';
+            $redirectPage = '/Mini%20Project%203ii/PhpGroupProject/views/admin/dashboard.php';
             break;
         case 'teacher':
-            $redirectPage = 'Mini%Project%203ii/PhpGroupProject/views/teacher/dashboard.php';
+            $redirectPage = '/Mini%20Project%203ii/PhpGroupProject/views/teacher/dashboard.php';
             break;
         case 'student':
-            $redirectPage = 'Mini%Project%203ii/PhpGroupProject/views/student/dashboard.php';
+            $redirectPage = '/Mini%20Project%203ii/PhpGroupProject/views/student/dashboard.php';
             break;
     }
     header("Location: $redirectPage");
@@ -33,13 +33,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $redirectPage = '';
             switch ($_SESSION['role']) {
                 case 'admin':
-                    $redirectPage = 'Mini%Project%203ii/PhpGroupProject/views/admin/dashboard.php';
+                    $redirectPage = '/Mini%20Project%203ii/PhpGroupProject/views/admin/dashboard.php';
                     break;
                 case 'teacher':
-                    $redirectPage = 'Mini%Project%203ii/PhpGroupProject/views/teacher/dashboard.php';
+                    $redirectPage = '/Mini%20Project%203ii/PhpGroupProject/views/teacher/dashboard.php';
                     break;
                 case 'student':
-                    $redirectPage = 'Mini%Project%203ii/PhpGroupProject/views/student/dashboard.php';
+                    $redirectPage = '/Mini%20Project%203ii/PhpGroupProject/views/student/dashboard.php';
                     break;
             }
             header("Location: $redirectPage");
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="/mini%203ii/test2/public/css/style.css" rel="stylesheet">
+    <link href="/Mini%20Project%203ii/PhpGroupProject/public/css/style.css" rel="stylesheet">
 </head>
 <body>
     <div class="login-container">

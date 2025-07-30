@@ -6,20 +6,20 @@ if (isLoggedIn()) {
     $redirectPage = '';
     switch ($_SESSION['role']) {
         case 'admin':
-            $redirectPage = 'Mini Project 3ii/PhpGroupProject/views/admin/dashboard.php';
+            $redirectPage = '/Mini%20Project%203ii/PhpGroupProject/views/admin/dashboard.php';
             break;
         case 'teacher':
-            $redirectPage = 'Mini Project 3ii/PhpGroupProject/views/teacher/dashboard.php';
+            $redirectPage = '/Mini%20Project%203ii/PhpGroupProject/views/teacher/dashboard.php';
             break;
         case 'student':
-            $redirectPage = 'Mini Project 3ii/PhpGroupProject/views/student/dashboard.php';
+            $redirectPage = '/Mini%20Project%203ii/PhpGroupProject/views/student/dashboard.php';
             break;
     }
     header("Location: $redirectPage");
     exit();
 } else {
     // Redirect to login if not logged in
-    header('Location: Mini Project 3ii/PhpGroupProject/actions/login.php');
+    header('Location: /Mini%20Project%203ii/PhpGroupProject/actions/login.php');
     exit();
 }
 ?>
