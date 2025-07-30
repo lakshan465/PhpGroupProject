@@ -1,6 +1,6 @@
 <?php
 if (!isLoggedIn()) {
-    header('Location: /Mini Project 3ii/PhpGroupProject/actions/login.php');
+    header('Location: /Mini%20Project%203ii/PhpGroupProject/actions/login.php');
     exit();
 }
 ?>
@@ -17,7 +17,7 @@ if (!isLoggedIn()) {
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="/mini%203ii/test2/public/css/style.css" rel="stylesheet">
+    <link href="/Mini%20Project%203ii/PhpGroupProject/public/css/style.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
@@ -52,7 +52,7 @@ if (!isLoggedIn()) {
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item" href="/mini%203ii/test2/actions/logout.php">
+                            <a class="dropdown-item" href="/Mini%20Project%203ii/PhpGroupProject/actions/logout.php">
                                 <i class="fas fa-sign-out-alt me-2"></i>Logout
                             </a>
                         </li>
@@ -71,14 +71,14 @@ if (!isLoggedIn()) {
                         <?php if ($_SESSION['role'] === 'admin'): ?>
                             <li class="nav-item">
                                 <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) === 'dashboard.php' && strpos($_SERVER['REQUEST_URI'], 'admin') ? 'active' : ''; ?>" 
-                                   href="/mini%203ii/test2/views/admin/dashboard.php">
+                                   href="/Mini%20Project%203ii/PhpGroupProject/views/admin/dashboard.php">
                                     <i class="fas fa-tachometer-alt"></i>
                                     Dashboard
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) === 'manage_users.php' ? 'active' : ''; ?>" 
-                                   href="/mini%203ii/test2/views/admin/manage_users.php">
+                                   href="/Mini%20Project%203ii/PhpGroupProject/views/admin/manage_users.php">
                                     <i class="fas fa-users"></i>
                                     Manage Users
                                 </a>
@@ -86,7 +86,7 @@ if (!isLoggedIn()) {
                         <?php elseif ($_SESSION['role'] === 'teacher'): ?>
                             <li class="nav-item">
                                 <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) === 'dashboard.php' && strpos($_SERVER['REQUEST_URI'], 'teacher') ? 'active' : ''; ?>" 
-                                   href="/mini%203ii/test2/views/teacher/dashboard.php">
+                                   href="/Mini%20Project%203ii/PhpGroupProject/views/teacher/dashboard.php">
                                     <i class="fas fa-chalkboard-teacher"></i>
                                     Dashboard
                                 </a>
@@ -106,7 +106,7 @@ if (!isLoggedIn()) {
                         <?php elseif ($_SESSION['role'] === 'student'): ?>
                             <li class="nav-item">
                                 <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) === 'dashboard.php' && strpos($_SERVER['REQUEST_URI'], 'student') ? 'active' : ''; ?>" 
-                                   href="/mini%203ii/test2/views/student/dashboard.php">
+                                   href="/Mini%20Project%203ii/PhpGroupProject/views/student/dashboard.php">
                                     <i class="fas fa-graduation-cap"></i>
                                     Dashboard
                                 </a>

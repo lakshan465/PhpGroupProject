@@ -14,7 +14,7 @@ function hasRole($role) {
 // Function to redirect if not authorized
 function requireRole($role) {
     if (!hasRole($role)) {
-        header('Location: /Mini Project 3ii/PhpGroupProject/actions/login.php');
+        header('Location: /Mini%Project%203ii/PhpGroupProject/actions/login.php');
         exit();
     }
 }
@@ -22,7 +22,7 @@ function requireRole($role) {
 // Function to redirect if not logged in
 function requireLogin() {
     if (!isLoggedIn()) {
-        header('Location: /Mini Project 3ii/PhpGroupProject/actions/login.php');
+        header('Location: /Mini%Project%203ii/PhpGroupProject/actions/login.php');
         exit();
     }
 }
@@ -52,7 +52,7 @@ function authenticateUser($username, $password) {
 // Function to logout user
 function logoutUser() {
     session_destroy();
-    header('Location: /Mini Project 3ii/PhpGroupProject/actions/login.php');
+    header('Location: /Mini%Project%203ii/PhpGroupProject/actions/login.php');
     exit();
 }
 ?>
