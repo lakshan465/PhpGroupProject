@@ -1,6 +1,6 @@
 <?php
 if (!isLoggedIn()) {
-    header('Location: /mini%203ii/test2/actions/login.php');
+    header('Location: /Mini Project 3ii/PhpGroupProject/actions/login.php');
     exit();
 }
 ?>

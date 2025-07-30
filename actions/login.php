@@ -6,13 +6,13 @@ if (isLoggedIn()) {
     $redirectPage = '';
     switch ($_SESSION['role']) {
         case 'admin':
-            $redirectPage = '/views/admin/dashboard.php';
+            $redirectPage = 'Mini Project 3ii/PhpGroupProject/views/admin/dashboard.php';
             break;
         case 'teacher':
-            $redirectPage = '/views/teacher/dashboard.php';
+            $redirectPage = 'Mini Project 3ii/PhpGroupProject/views/teacher/dashboard.php';
             break;
         case 'student':
-            $redirectPage = '/views/student/dashboard.php';
+            $redirectPage = 'Mini Project 3ii/PhpGroupProject/views/student/dashboard.php';
             break;
     }
     header("Location: $redirectPage");
@@ -33,13 +33,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $redirectPage = '';
             switch ($_SESSION['role']) {
                 case 'admin':
-                    $redirectPage = '/views/admin/dashboard.php';
+                    $redirectPage = 'Mini Project 3ii/PhpGroupProject/views/admin/dashboard.php';
                     break;
                 case 'teacher':
-                    $redirectPage = '/views/teacher/dashboard.php';
+                    $redirectPage = 'Mini Project 3ii/PhpGroupProject/views/teacher/dashboard.php';
                     break;
                 case 'student':
-                    $redirectPage = '/views/student/dashboard.php';
+                    $redirectPage = 'Mini Project 3ii/PhpGroupProject/views/student/dashboard.php';
                     break;
             }
             header("Location: $redirectPage");
