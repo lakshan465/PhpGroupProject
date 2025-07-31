@@ -65,7 +65,38 @@ try {
         }
     }
     
+    // Create quizzes table
+    $createQuizzesTableSQL = "
+    CREATE TABLE IF NOT EXISTS quizzes (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(200) NOT NULL,
+        description TEXT,
+        teacher_id INT(11) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        status ENUM('active', 'inactive') DEFAULT 'active',
+        FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
+    )";
     
+    $pdo->exec($createQuizzesTableSQL);
+    echo "✅ Quizzes table created successfully<br>";
+    
+    // Create questions table
+    $createQuestionsTableSQL = "
+    CREATE TABLE IF NOT EXISTS questions (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        quiz_id INT(11) NOT NULL,
+        question_text TEXT NOT NULL,
+        option_a VARCHAR(255) NOT NULL,
+        option_b VARCHAR(255) NOT NULL,
+        option_c VARCHAR(255) NOT NULL,
+        option_d VARCHAR(255) NOT NULL,
+        correct_answer ENUM('A', 'B', 'C', 'D') NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE CASCADE
+    )";
+    
+    $pdo->exec($createQuestionsTableSQL);
+    echo "✅ Questions table created successfully<br>";
     
 } catch (PDOException $e) {
     echo "❌ Error: " . $e->getMessage() . "<br>";

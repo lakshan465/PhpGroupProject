@@ -1,6 +1,6 @@
 <?php
 if (!isLoggedIn()) {
-    header('Location: /Mini%20Project%203ii/PhpGroupProject/actions/login.php');
+    header('Location: /php/actions/login.php');
     exit();
 }
 ?>
@@ -52,7 +52,7 @@ if (!isLoggedIn()) {
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item" href="/Mini%20Project%203ii/PhpGroupProject/actions/logout.php">
+                            <a class="dropdown-item" href="/php/actions/logout.php">
                                 <i class="fas fa-sign-out-alt me-2"></i>Logout
                             </a>
                         </li>
@@ -92,9 +92,17 @@ if (!isLoggedIn()) {
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fas fa-book"></i>
-                                    My Courses
+                                <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) === 'manage_quizzes.php' ? 'active' : ''; ?>" 
+                                   href="/Mini%20Project%203ii/PhpGroupProject/views/teacher/manage_quizzes.php">
+                                    <i class="fas fa-clipboard-list"></i>
+                                    My Quizzes
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) === 'create_quiz.php' ? 'active' : ''; ?>" 
+                                   href="/Mini%20Project%203ii/PhpGroupProject/views/teacher/create_quiz.php">
+                                    <i class="fas fa-plus-circle"></i>
+                                    Create Quiz
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -106,7 +114,7 @@ if (!isLoggedIn()) {
                         <?php elseif ($_SESSION['role'] === 'student'): ?>
                             <li class="nav-item">
                                 <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) === 'dashboard.php' && strpos($_SERVER['REQUEST_URI'], 'student') ? 'active' : ''; ?>" 
-                                   href="/Mini%20Project%203ii/PhpGroupProject/views/student/dashboard.php">
+                                   href="/php/views/student/dashboard.php">
                                     <i class="fas fa-graduation-cap"></i>
                                     Dashboard
                                 </a>
