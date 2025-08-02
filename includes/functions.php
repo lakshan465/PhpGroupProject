@@ -98,4 +98,20 @@ function validatePassword($password) {
            preg_match('/[a-z]/', $password) && 
            preg_match('/[0-9]/', $password);
 }
+
+// Function to change user password (admin only)
+function changeUserPassword($userId, $newPassword) {
+    $pdo = getDBConnection();
+    
+    try {
+        // Hash the new password
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+        
+        // Update the password
+        $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
+        return $stmt->execute([$hashedPassword, $userId]);
+    } catch (PDOException $e) {
+        return false;
+    }
+}
 ?>
