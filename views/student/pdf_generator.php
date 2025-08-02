@@ -141,7 +141,7 @@ $pdf->Ln(15);
 // QR Code Section
 $pdf->SetFont('helvetica', 'B', 14);
 $pdf->SetTextColor(0, 123, 255);
-$pdf->Cell(0, 10, 'Verified Quiz Result QR Code', 0, 1, 'L');
+$pdf->Cell(0, 10, 'Verified Quiz Result QR Code', 0, 1, 'C');
 $pdf->SetTextColor(0, 0, 0);
 
 // Generate QR code URL (pointing to brief quiz result)
@@ -152,65 +152,54 @@ $result_url = $base_url . '/Mini Project 3ii/PhpGroupProject/views/student/quiz_
 try {
     $current_y = $pdf->GetY();
     
-    // Add QR code using TCPDF's 2D barcode feature
+    // Calculate center position for QR code
+    $page_width = $pdf->getPageWidth();
+    $qr_size = 40;
+    $qr_x = ($page_width - $qr_size) / 2;
+    
+    // Add QR code centered
     $pdf->SetTextColor(0, 0, 0);
-    $pdf->write2DBarcode($result_url, 'QRCODE,L', 20, $current_y, 30, 30, array(), 'N');
+    $pdf->write2DBarcode($result_url, 'QRCODE,L', $qr_x, $current_y, $qr_size, $qr_size, array(), 'N');
     
-    // Add description next to QR code
-    $pdf->SetXY(55, $current_y + 2);
-    $pdf->SetFont('helvetica', 'B', 11);
-    $pdf->Cell(0, 6, 'Scan for Verified Quiz Result', 0, 1, 'L');
+    // Add centered text below QR code
+    $pdf->SetY($current_y + $qr_size + 5);
+    $pdf->SetFont('helvetica', 'B', 12);
+    $pdf->Cell(0, 8, 'Scan QR Code', 0, 1, 'C');
     
-    $pdf->SetXY(55, $current_y + 8);
-    $pdf->SetFont('helvetica', '', 10);
-    $pdf->Cell(0, 6, 'Quick access to verified result summary', 0, 1, 'L');
-    $pdf->SetXY(55, $current_y + 14);
-    $pdf->Cell(0, 6, 'showing student name, score, and status.', 0, 1, 'L');
-    
-    $pdf->SetXY(55, $current_y + 22);
-    $pdf->SetFont('helvetica', '', 8);
-    $pdf->SetTextColor(108, 117, 125);
-    $pdf->Cell(0, 5, 'Result: ' . $result_url, 0, 1, 'L');
-    
-    // Move Y position past the QR code
-    $pdf->SetY($current_y + 35);
+    // Move Y position past the QR code section
+    $pdf->SetY($current_y + $qr_size + 15);
     
 } catch (Exception $e) {
     // Fallback if QR generation fails
     $current_y = $pdf->GetY();
     
-    // Draw a simple box placeholder
+    // Calculate center position for placeholder
+    $page_width = $pdf->getPageWidth();
+    $placeholder_size = 40;
+    $placeholder_x = ($page_width - $placeholder_size) / 2;
+    
+    // Draw centered placeholder box
     $pdf->SetFillColor(240, 240, 240);
     $pdf->SetDrawColor(200, 200, 200);
-    $pdf->Rect(20, $current_y, 30, 30, 'DF');
+    $pdf->Rect($placeholder_x, $current_y, $placeholder_size, $placeholder_size, 'DF');
     
-    // Add QR icon text in the box
-    $pdf->SetXY(20, $current_y + 10);
-    $pdf->SetFont('helvetica', 'B', 10);
+    // Add QR icon text in the centered box
+    $pdf->SetXY($placeholder_x, $current_y + 15);
+    $pdf->SetFont('helvetica', 'B', 12);
     $pdf->SetTextColor(100, 100, 100);
-    $pdf->Cell(30, 8, 'QR CODE', 0, 1, 'C');
-    $pdf->SetXY(20, $current_y + 18);
-    $pdf->SetFont('helvetica', '', 8);
-    $pdf->Cell(30, 6, 'ERROR', 0, 1, 'C');
+    $pdf->Cell($placeholder_size, 8, 'QR CODE', 0, 1, 'C');
+    $pdf->SetXY($placeholder_x, $current_y + 25);
+    $pdf->SetFont('helvetica', '', 10);
+    $pdf->Cell($placeholder_size, 6, 'ERROR', 0, 1, 'C');
     
-    // Add description next to placeholder
-    $pdf->SetXY(55, $current_y + 2);
+    // Add centered error message below
+    $pdf->SetY($current_y + $placeholder_size + 5);
     $pdf->SetFont('helvetica', 'B', 11);
     $pdf->SetTextColor(220, 53, 69);
-    $pdf->Cell(0, 6, 'QR Generation Failed', 0, 1, 'L');
+    $pdf->Cell(0, 6, 'QR Generation Failed', 0, 1, 'C');
     
-    $pdf->SetXY(55, $current_y + 8);
-    $pdf->SetFont('helvetica', '', 10);
-    $pdf->SetTextColor(0, 0, 0);
-    $pdf->Cell(0, 6, 'Access result directly:', 0, 1, 'L');
-    
-    $pdf->SetXY(55, $current_y + 15);
-    $pdf->SetFont('helvetica', '', 8);
-    $pdf->SetTextColor(0, 123, 255);
-    $pdf->Cell(0, 5, $result_url, 0, 1, 'L');
-    
-    // Move Y position past the placeholder
-    $pdf->SetY($current_y + 35);
+    // Move Y position past the placeholder section
+    $pdf->SetY($current_y + $placeholder_size + 20);
 }
 
 $pdf->Ln(10);
