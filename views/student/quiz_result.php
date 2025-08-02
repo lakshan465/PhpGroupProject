@@ -52,15 +52,13 @@ include __DIR__ . '/../../templates/header.php';
                 <a href="pdf_generator.php?attempt_id=<?php echo $attempt_id; ?>" class="btn btn-sm btn-success">
                     <i class="fas fa-download me-1"></i>Download PDF
                 </a>
-                <a href="generate_certificate.php?attempt_id=<?php echo $attempt_id; ?>" class="btn btn-sm btn-primary">
-                    <i class="fas fa-certificate me-1"></i>Get Certificate
-                </a>
+                
             </div>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-12">
             <!-- Score Summary -->
             <div class="card mb-4">
                 <div class="card-header">
@@ -143,40 +141,6 @@ include __DIR__ . '/../../templates/header.php';
                         </div>
                     </div>
                     <?php endforeach; ?>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-lg-4">
-            <!-- QR Code -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h6 class="mb-0">Quick Access QR Code</h6>
-                </div>
-                <div class="card-body text-center">
-                    <img src="generate_qr.php?data=<?php echo urlencode("Quiz: {$attempt['title']}\nStudent: {$attempt['full_name']}\nScore: {$attempt['score']}/{$attempt['total_questions']} ({$percentage}%)\nDate: {$attempt['completed_at']}"); ?>" 
-                         alt="QR Code" class="img-fluid" style="max-width: 200px;">
-                    <p class="mt-2"><small class="text-muted">Scan to view result summary</small></p>
-                </div>
-            </div>
-            
-            <!-- Statistics -->
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="mb-0">Quiz Statistics</h6>
-                </div>
-                <div class="card-body">
-                    <p><strong>Completed:</strong> <?php echo date('M j, Y g:i A', strtotime($attempt['completed_at'])); ?></p>
-                    <p><strong>Duration:</strong> 
-                        <?php 
-                        $start = new DateTime($attempt['started_at']);
-                        $end = new DateTime($attempt['completed_at']);
-                        $duration = $start->diff($end);
-                        echo $duration->format('%i minutes %s seconds');
-                        ?>
-                    </p>
-                    <p><strong>Correct Answers:</strong> <?php echo $attempt['score']; ?></p>
-                    <p><strong>Wrong Answers:</strong> <?php echo $attempt['total_questions'] - $attempt['score']; ?></p>
                 </div>
             </div>
         </div>

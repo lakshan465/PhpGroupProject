@@ -47,9 +47,7 @@ include __DIR__ . '/../../templates/header.php';
             </h1>
             <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group me-2">
-                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="generateQRCode()">
-                        <i class="fas fa-qrcode me-1"></i>My QR Code
-                    </button>
+                    
                 </div>
             </div>
         </div>
