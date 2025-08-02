@@ -83,76 +83,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             overflow-x: hidden;
         }
 
-        /* Animated Background Elements */
-        .bg-shapes {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .shape {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 50%;
-            animation: float 15s infinite ease-in-out;
-        }
-
-        .shape:nth-child(1) {
-            width: 200px;
-            height: 200px;
-            top: 10%;
-            left: 10%;
-            animation-delay: 0s;
-            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(102, 126, 234, 0.2));
-        }
-
-        .shape:nth-child(2) {
-            width: 150px;
-            height: 150px;
-            top: 70%;
-            left: 80%;
-            animation-delay: 2s;
-            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(240, 147, 251, 0.2));
-        }
-
-        .shape:nth-child(3) {
-            width: 100px;
-            height: 100px;
-            top: 30%;
-            right: 20%;
-            animation-delay: 4s;
-            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(245, 87, 108, 0.2));
-        }
-
-        .shape:nth-child(4) {
-            width: 120px;
-            height: 120px;
-            bottom: 20%;
-            left: 30%;
-            animation-delay: 6s;
-            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(118, 75, 162, 0.2));
-        }
-
-        @keyframes float {
-            0%, 100% { 
-                transform: translateY(0px) rotate(0deg) scale(1); 
-                opacity: 0.7;
-            }
-            33% { 
-                transform: translateY(-30px) rotate(120deg) scale(1.1); 
-                opacity: 0.9;
-            }
-            66% { 
-                transform: translateY(30px) rotate(240deg) scale(0.9); 
-                opacity: 0.5;
-            }
-        }
-
         .login-container {
             position: relative;
             z-index: 2;
@@ -177,30 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             max-width: 900px;
             width: 100%;
             min-height: 600px;
-            animation: slideInScale 1s ease-out, cardFloat 6s ease-in-out infinite 2s;
             border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        @keyframes slideInScale {
-            0% {
-                opacity: 0;
-                transform: translateY(50px) scale(0.9);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        @keyframes cardFloat {
-            0%, 100% {
-                transform: translateY(0px);
-                box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
-            }
-            50% {
-                transform: translateY(-10px);
-                box-shadow: 0 35px 80px rgba(0, 0, 0, 0.2);
-            }
         }
 
         .login-image {
@@ -281,15 +188,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.02), transparent);
-            animation: formShimmer 8s ease-in-out infinite;
+            background: transparent;
             pointer-events: none;
             z-index: 1;
-        }
-
-        @keyframes formShimmer {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; }
         }
 
         .login-header {
@@ -307,31 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             justify-content: center;
             margin: 0 auto 20px;
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-            animation: logoPulse 3s ease-in-out infinite;
             position: relative;
-            overflow: hidden;
-        }
-
-        .login-header .logo::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            animation: logoShine 4s ease-in-out infinite;
-        }
-
-        @keyframes logoPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        @keyframes logoShine {
-            0% { left: -100%; }
-            50% { left: 100%; }
-            100% { left: 100%; }
         }
 
         .login-header .logo i {
@@ -344,18 +221,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 10px;
-            animation: fadeInDown 1s ease-out;
-        }
-
-        @keyframes fadeInDown {
-            0% {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .login-header p {
@@ -382,34 +247,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-color: #667eea;
             background: white;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-            transform: translateY(-2px);
-            animation: inputPulse 0.6s ease-out;
-        }
-
-        @keyframes inputPulse {
-            0% { transform: translateY(-2px) scale(1); }
-            50% { transform: translateY(-2px) scale(1.02); }
-            100% { transform: translateY(-2px) scale(1); }
         }
 
         .form-group {
             margin-bottom: 25px;
             position: relative;
-            animation: fadeInUp 0.6s ease-out forwards;
-            opacity: 0;
-            transform: translateY(20px);
             z-index: 100;
             pointer-events: auto;
-        }
-
-        .form-group:nth-child(1) { animation-delay: 0.3s; }
-        .form-group:nth-child(2) { animation-delay: 0.5s; }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .form-control::placeholder {
@@ -450,9 +296,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-top: 10px;
             position: relative;
             overflow: hidden;
-            animation: fadeInUp 0.6s ease-out 0.7s forwards;
-            opacity: 0;
-            transform: translateY(20px);
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .btn-login::before {
@@ -521,128 +366,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             .login-form {
                 padding: 40px 30px;
             }
-        }
 
-        /* Geometric Animation Effects */
-        .particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .particle {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.8);
-            animation: geometricFloat 25s linear infinite;
-            pointer-events: none;
-            user-select: none;
-        }
-
-        .particle:nth-child(1) {
-            left: 10%;
-            animation-delay: 0s;
-            animation-duration: 20s;
-            border-radius: 50%;
-        }
-
-        .particle:nth-child(2) {
-            left: 30%;
-            animation-delay: 5s;
-            animation-duration: 25s;
-            transform: rotate(45deg);
-        }
-
-        .particle:nth-child(3) {
-            left: 50%;
-            animation-delay: 10s;
-            animation-duration: 30s;
-            border-radius: 2px;
-            transform: rotate(90deg);
-        }
-
-        .particle:nth-child(4) {
-            left: 70%;
-            animation-delay: 15s;
-            animation-duration: 22s;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-        }
-
-        .particle:nth-child(5) {
-            left: 90%;
-            animation-delay: 20s;
-            animation-duration: 28s;
-            transform: rotate(135deg);
-        }
-
-        .particle:nth-child(6) {
-            left: 25%;
-            animation-delay: 25s;
-            animation-duration: 24s;
-            border-radius: 50% 0;
-        }
-
-        @keyframes geometricFloat {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
+            .edu-icons {
+                flex-direction: column;
+                gap: 15px;
             }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
 
-        /* Input Focus Glow Effect */
-        .input-icon {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #adb5bd;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-        }
+            .icon-item {
+                display: flex;
+                align-items: center;
+                text-align: left;
+                padding: 5px;
+            }
 
-        .form-control:focus + .input-icon,
-        .form-control:focus ~ .input-icon {
-            color: #667eea;
-            text-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+            .icon-item i {
+                font-size: 1.5rem;
+                margin-right: 15px;
+                margin-bottom: 0;
+            }
+
+            .demo-credentials {
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Animated Background Shapes -->
-    <div class="bg-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
-
     <div class="login-container">
-        <!-- Particle Effects -->
-        <div class="particles">
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-        </div>
-
         <div class="login-wrapper">
             <!-- Left Side - Beautiful Image -->
             <div class="login-image">
