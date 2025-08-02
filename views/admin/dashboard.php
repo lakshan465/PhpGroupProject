@@ -63,52 +63,7 @@ include __DIR__ . '/../../templates/header.php';
         </div>
         
         <!-- Welcome Section -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="fas fa-info-circle me-2"></i>
-                            System Overview
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <h4>Welcome, <?php echo htmlspecialchars($_SESSION['full_name']); ?>!</h4>
-                        <p>You have administrative privileges to manage the entire system. Here's what you can do:</p>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6><i class="fas fa-check text-success me-2"></i>User Management</h6>
-                                <ul>
-                                    <li>Create new user accounts</li>
-                                    <li>Edit existing user information</li>
-                                    <li>Delete user accounts</li>
-                                    <li>Change user roles and permissions</li>
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <h6><i class="fas fa-check text-success me-2"></i>System Administration</h6>
-                                <ul>
-                                    <li>View system statistics</li>
-                                    <li>Monitor user activities</li>
-                                    <li>Export user data</li>
-                                    <li>Manage system settings</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-3">
-                            <a href="manage_users.php" class="btn btn-primary me-2">
-                                <i class="fas fa-users me-1"></i>Manage Users
-                            </a>
-                            <a href="#" class="btn btn-outline-secondary">
-                                <i class="fas fa-cog me-1"></i>System Settings
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
         
         <!-- Recent Users -->
         <div class="row">

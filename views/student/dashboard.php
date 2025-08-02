@@ -1,11 +1,39 @@
 <?php
 require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../config/db.php';
 
 // Check if user is student
 requireRole('student');
 
-$pageTitle = 'Student Dashboard - User Management System';
+$pdo = getDBConnection();
 
+// Get available quizzes
+$quizzesStmt = $pdo->prepare("SELECT * FROM quizzes WHERE status = 'active' ORDER BY created_at DESC");
+$quizzesStmt->execute();
+$quizzes = $quizzesStmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Get student's completed quizzes
+$completedStmt = $pdo->prepare("
+    SELECT qa.*, q.title, q.description 
+    FROM quiz_attempts qa 
+    JOIN quizzes q ON qa.quiz_id = q.id 
+    WHERE qa.student_id = ? AND qa.status = 'completed' 
+    ORDER BY qa.completed_at DESC
+");
+$completedStmt->execute([$_SESSION['user_id']]);
+$completedQuizzes = $completedStmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Calculate statistics
+$totalScore = 0;
+$totalQuestions = 0;
+$certificates = 0;
+foreach ($completedQuizzes as $cq) {
+    $totalScore += $cq['score'];
+    $totalQuestions += $cq['total_questions'];
+    if (($cq['score'] / $cq['total_questions']) * 100 >= 60) $certificates++;
+}
+
+$pageTitle = 'Student Dashboard - Quiz System';
 include __DIR__ . '/../../templates/header.php';
 ?>
 
@@ -19,172 +47,116 @@ include __DIR__ . '/../../templates/header.php';
             </h1>
             <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group me-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">
-                        <i class="fas fa-download me-1"></i>Transcript
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary">
-                        <i class="fas fa-calendar me-1"></i>Schedule
+                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="generateQRCode()">
+                        <i class="fas fa-qrcode me-1"></i>My QR Code
                     </button>
                 </div>
             </div>
         </div>
         
         <!-- Welcome Section -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="alert alert-success" style="background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none;">
-                    <h4 class="alert-heading">
-                        <i class="fas fa-rocket me-2"></i>
-                        Welcome back, <?php echo htmlspecialchars($_SESSION['full_name']); ?>!
-                    </h4>
-                    <p>Ready to continue your learning journey? Check out your courses, assignments, and progress below.</p>
-                </div>
-            </div>
-        </div>
+        
         
         <!-- Statistics Cards -->
         <div class="row mb-4">
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="stats-card">
-                    <i class="fas fa-book-open"></i>
-                    <h3>6</h3>
-                    <p>Enrolled Courses</p>
+                    <i class="fas fa-question-circle"></i>
+                    <h3><?php echo count($quizzes); ?></h3>
+                    <p>Available Quizzes</p>
                 </div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="stats-card">
-                    <i class="fas fa-tasks"></i>
-                    <h3>12</h3>
-                    <p>Assignments</p>
+                    <i class="fas fa-check-circle"></i>
+                    <h3><?php echo count($completedQuizzes); ?></h3>
+                    <p>Completed Quizzes</p>
                 </div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="stats-card">
                     <i class="fas fa-chart-line"></i>
-                    <h3>3.8</h3>
-                    <p>GPA</p>
+                    <h3><?php echo $totalQuestions > 0 ? round(($totalScore / $totalQuestions) * 100, 1) : 0; ?>%</h3>
+                    <p>Average Score</p>
                 </div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="stats-card">
-                    <i class="fas fa-trophy"></i>
-                    <h3>5</h3>
-                    <p>Achievements</p>
+                    <i class="fas fa-certificate"></i>
+                    <h3><?php echo $certificates; ?></h3>
+                    <p>Certificates Earned</p>
                 </div>
             </div>
         </div>
         
         <!-- Main Content -->
         <div class="row">
-            <div class="col-lg-8">
-                <!-- Current Courses -->
+            <div class="col-lg-12">
+                <!-- Available Quizzes -->
                 <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="fas fa-book-open me-2"></i>
-                            My Courses
+                            <i class="fas fa-question-circle me-2"></i>
+                            Available Quizzes
                         </h5>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <div class="card border-primary">
-                                    <div class="card-body">
-                                        <h6 class="card-title text-primary">Web Development</h6>
-                                        <p class="card-text">
-                                            <small class="text-muted">CS101 - Prof. Johnson</small>
-                                        </p>
-                                        <div class="progress mb-2" style="height: 8px;">
-                                            <div class="progress-bar bg-primary" style="width: 85%"></div>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <small>Progress: 85%</small>
-                                            <small class="text-success">Grade: A-</small>
-                                        </div>
-                                        <div class="mt-2">
-                                            <button class="btn btn-sm btn-primary">
-                                                <i class="fas fa-play me-1"></i>Continue
-                                            </button>
+                        <?php if (empty($quizzes)): ?>
+                            <div class="text-center py-4">
+                                <i class="fas fa-info-circle fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No quizzes available at the moment.</p>
+                            </div>
+                        <?php else: ?>
+                            <div class="row">
+                                <?php foreach ($quizzes as $quiz): 
+                                // Check if already completed
+                                $completed = false;
+                                $completedAttemptId = null;
+                                foreach ($completedQuizzes as $cq) {
+                                    if ($cq['quiz_id'] == $quiz['id']) {
+                                        $completed = true;
+                                        $completedAttemptId = $cq['id'];
+                                        break;
+                                    }
+                                }
+                                ?>
+                                <div class="col-md-6 mb-3">
+                                    <div class="card border-primary">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-primary"><?php echo htmlspecialchars($quiz['title']); ?></h6>
+                                            <p class="card-text">
+                                                <small class="text-muted"><?php echo htmlspecialchars($quiz['description']); ?></small>
+                                            </p>
+                                            <?php if ($completed): ?>
+                                                <span class="badge bg-success mb-2">Completed</span>
+                                                <div class="mt-2">
+                                                    <a href="quiz_result.php?attempt_id=<?php echo $completedAttemptId; ?>" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-eye me-1"></i>View Results
+                                                    </a>
+                                                </div>
+                                            <?php else: ?>
+                                                <div class="mt-2">
+                                                    <a href="take_quiz.php?id=<?php echo $quiz['id']; ?>" class="btn btn-sm btn-primary">
+                                                        <i class="fas fa-play me-1"></i>Take Quiz
+                                                    </a>
+                                                </div>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
+                                <?php endforeach; ?>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="card border-info">
-                                    <div class="card-body">
-                                        <h6 class="card-title text-info">Database Design</h6>
-                                        <p class="card-text">
-                                            <small class="text-muted">CS201 - Prof. Smith</small>
-                                        </p>
-                                        <div class="progress mb-2" style="height: 8px;">
-                                            <div class="progress-bar bg-info" style="width: 72%"></div>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <small>Progress: 72%</small>
-                                            <small class="text-info">Grade: B+</small>
-                                        </div>
-                                        <div class="mt-2">
-                                            <button class="btn btn-sm btn-info">
-                                                <i class="fas fa-play me-1"></i>Continue
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="card border-warning">
-                                    <div class="card-body">
-                                        <h6 class="card-title text-warning">Software Engineering</h6>
-                                        <p class="card-text">
-                                            <small class="text-muted">CS301 - Prof. Brown</small>
-                                        </p>
-                                        <div class="progress mb-2" style="height: 8px;">
-                                            <div class="progress-bar bg-warning" style="width: 45%"></div>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <small>Progress: 45%</small>
-                                            <small class="text-warning">Grade: B</small>
-                                        </div>
-                                        <div class="mt-2">
-                                            <button class="btn btn-sm btn-warning">
-                                                <i class="fas fa-play me-1"></i>Continue
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="card border-success">
-                                    <div class="card-body">
-                                        <h6 class="card-title text-success">Data Structures</h6>
-                                        <p class="card-text">
-                                            <small class="text-muted">CS202 - Prof. Davis</small>
-                                        </p>
-                                        <div class="progress mb-2" style="height: 8px;">
-                                            <div class="progress-bar bg-success" style="width: 90%"></div>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <small>Progress: 90%</small>
-                                            <small class="text-success">Grade: A</small>
-                                        </div>
-                                        <div class="mt-2">
-                                            <button class="btn btn-sm btn-success">
-                                                <i class="fas fa-play me-1"></i>Continue
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <?php endif; ?>
                     </div>
                 </div>
-                
-                <!-- Upcoming Assignments -->
+
+                <!-- Recent Quiz Results -->
+                <?php if (!empty($completedQuizzes)): ?>
                 <div class="card">
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="fas fa-tasks me-2"></i>
-                            Upcoming Assignments
+                            <i class="fas fa-chart-bar me-2"></i>
+                            Recent Quiz Results
                         </h5>
                     </div>
                     <div class="card-body">
@@ -192,127 +164,101 @@ include __DIR__ . '/../../templates/header.php';
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Assignment</th>
-                                        <th>Course</th>
-                                        <th>Due Date</th>
-                                        <th>Status</th>
+                                        <th>Quiz</th>
+                                        <th>Score</th>
+                                        <th>Percentage</th>
+                                        <th>Date</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <?php foreach (array_slice($completedQuizzes, 0, 5) as $quiz): 
+                                    $percentage = ($quiz['score'] / $quiz['total_questions']) * 100;
+                                    ?>
                                     <tr>
+                                        <td><?php echo htmlspecialchars($quiz['title']); ?></td>
+                                        <td><?php echo $quiz['score']; ?>/<?php echo $quiz['total_questions']; ?></td>
                                         <td>
-                                            <strong>Final Project</strong><br>
-                                            <small class="text-muted">E-commerce Website</small>
+                                            <span class="badge <?php echo $percentage >= 60 ? 'bg-success' : 'bg-danger'; ?>">
+                                                <?php echo round($percentage, 1); ?>%
+                                            </span>
                                         </td>
-                                        <td>Web Development</td>
+                                        <td><?php echo date('M j, Y', strtotime($quiz['completed_at'])); ?></td>
                                         <td>
-                                            <span class="text-danger">Dec 15, 2024</span><br>
-                                            <small class="text-muted">3 days left</small>
-                                        </td>
-                                        <td><span class="badge bg-warning">In Progress</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-primary">
-                                                <i class="fas fa-edit me-1"></i>Work
-                                            </button>
+                                            <a href="quiz_result.php?attempt_id=<?php echo $quiz['id']; ?>" class="btn btn-sm btn-outline-primary">View</a>
+                                            <a href="pdf_generator.php?attempt_id=<?php echo $quiz['id']; ?>" class="btn btn-sm btn-outline-success">PDF</a>
+                                            <?php if ($percentage >= 60): ?>
+                                            <a href="generate_certificate.php?attempt_id=<?php echo $quiz['id']; ?>" class="btn btn-sm btn-outline-warning">Cert</a>
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>
-                                            <strong>Database Schema</strong><br>
-                                            <small class="text-muted">Library Management System</small>
-                                        </td>
-                                        <td>Database Design</td>
-                                        <td>
-                                            <span class="text-warning">Dec 20, 2024</span><br>
-                                            <small class="text-muted">8 days left</small>
-                                        </td>
-                                        <td><span class="badge bg-secondary">Not Started</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-info">
-                                                <i class="fas fa-play me-1"></i>Start
-                                            </button>
-                                        </td>
-                                    </tr>
+                                    <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
+                <?php endif; ?>
             </div>
             
-            <div class="col-lg-4">
-                <!-- Academic Progress -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="fas fa-chart-pie me-2"></i>
-                            Academic Progress
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between">
-                                <span>Overall Progress</span>
-                                <span>73%</span>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar bg-primary" style="width: 73%"></div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between">
-                                <span>Assignments Completed</span>
-                                <span>15/20</span>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar bg-success" style="width: 75%"></div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between">
-                                <span>Current GPA</span>
-                                <span>3.8/4.0</span>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar bg-info" style="width: 95%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            
+
+                <!-- Performance Summary -->
                 
-                <!-- Quick Links -->
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="fas fa-link me-2"></i>
-                            Quick Links
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-outline-primary">
-                                <i class="fas fa-calendar me-2"></i>
-                                View Schedule
-                            </button>
-                            <button class="btn btn-outline-info">
-                                <i class="fas fa-book-open me-2"></i>
-                                Library Resources
-                            </button>
-                            <button class="btn btn-outline-success">
-                                <i class="fas fa-users me-2"></i>
-                                Study Groups
-                            </button>
-                            <button class="btn btn-outline-warning">
-                                <i class="fas fa-question-circle me-2"></i>
-                                Get Help
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                
+                <!-- Quick Actions -->
+                
             </div>
         </div>
     </div>
 </main>
 
+<!-- QR Code Modal -->
+<div class="modal fade" id="qrModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">My Student QR Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="generate_qr.php?student_id=<?php echo $_SESSION['user_id']; ?>&size=300" 
+                     alt="Student Profile QR Code" class="img-fluid" id="modal-qr-image" crossorigin="anonymous">
+                <p class="mt-3">Scan this QR code to access your complete student profile with live quiz results and achievements.</p>
+                <div class="alert alert-info">
+                    <small><i class="fas fa-info-circle me-2"></i>This QR code links to your public profile page that shows real-time statistics and quiz history.</small>
+                </div>
+                
+                <!-- Profile URL Display -->
+                <div class="mt-3">
+                    <label class="form-label"><strong>Profile URL:</strong></label>
+                    <div class="input-group">
+                        <input type="text" class="form-control form-control-sm" 
+                               value="<?php 
+                                   $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
+                                   $host = $_SERVER['HTTP_HOST'];
+                                   $basePath = dirname(dirname($_SERVER['REQUEST_URI']));
+                                   echo $protocol . $host . $basePath . '/views/student/public_profile.php?id=' . $_SESSION['user_id'];
+                               ?>" 
+                               readonly id="profile-url">
+                        <button class="btn btn-outline-secondary btn-sm" onclick="copyProfileURL()" title="Copy URL">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="downloadQR()">
+                    <i class="fas fa-download me-1"></i>Download QR Code
+                </button>
+                <button type="button" class="btn btn-success" onclick="downloadQRFromModal()">
+                    <i class="fas fa-save me-1"></i>Save as Image
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php include __DIR__ . '/../../templates/footer.php'; ?>
+
