@@ -2,7 +2,7 @@
 // Database configuration
 define('DB_HOST', 'localhost');
 define('DB_USERNAME', 'root');
-define('DB_PASSWORD', '');
+define('DB_PASSWORD', 'RT129BQ*a');
 define('DB_NAME', 'quiz_system_project');
 
 // Create connection

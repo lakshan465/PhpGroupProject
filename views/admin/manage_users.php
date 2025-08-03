@@ -46,6 +46,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $messageType = 'danger';
                 }
                 break;
+                
+            case 'change_password':
+                $userId = $_POST['user_id'];
+                $newPassword = $_POST['new_password'];
+                
+                // Simple validation - just check if password is not empty
+                if (empty($newPassword)) {
+                    $message = 'Password cannot be empty.';
+                    $messageType = 'danger';
+                } elseif (changeUserPassword($userId, $newPassword)) {
+                    $user = getUserById($userId);
+                    $message = 'Password changed successfully for user: ' . htmlspecialchars($user['username']);
+                    $messageType = 'success';
+                } else {
+                    $message = 'Error changing password.';
+                    $messageType = 'danger';
+                }
+                break;
         }
     }
 }
@@ -168,6 +186,12 @@ include __DIR__ . '/../../templates/header.php';
                                                     onclick="editUser(<?php echo htmlspecialchars(json_encode($user)); ?>)"
                                                     data-bs-toggle="tooltip" title="Edit User">
                                                 <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-info" 
+                                                    onclick="changePassword(<?php echo $user['id']; ?>, '<?php echo htmlspecialchars($user['username'], ENT_QUOTES); ?>')"
+                                                    data-bs-toggle="modal" data-bs-target="#changePasswordModal"
+                                                    title="Change Password">
+                                                <i class="fas fa-key"></i>
                                             </button>
                                             <?php if ($user['id'] != 1): // Don't allow deleting main admin ?>
                                                 <button type="button" class="btn btn-sm btn-danger" 
@@ -318,7 +342,74 @@ include __DIR__ . '/../../templates/header.php';
     </div>
 </div>
 
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-key me-2"></i>
+                    Change User Password
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" id="passwordChangeForm">
+                <input type="hidden" name="action" value="change_password">
+                <input type="hidden" name="user_id" id="change_user_id">
+                
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        You are changing the password for user: <strong id="change_username"></strong>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="new_password" name="new_password" 
+                                   required placeholder="Enter new password">
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">
+                            Enter any password you want.
+                        </div>
+                        <div class="invalid-feedback" style="display: none;">Please enter a password.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirm_password" 
+                               required placeholder="Confirm new password">
+                        <div class="invalid-feedback" style="display: none;">Passwords do not match.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-info">
+                        <i class="fas fa-key me-1"></i>Change Password
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
+// Enable tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+    
+    console.log('Bootstrap tooltips initialized');
+});
+
 function editUser(user) {
     document.getElementById('edit_user_id').value = user.id;
     document.getElementById('edit_username').value = user.username;
@@ -329,6 +420,123 @@ function editUser(user) {
     
     new bootstrap.Modal(document.getElementById('editUserModal')).show();
 }
+
+// Function to handle password change
+function changePassword(userId, username) {
+    console.log('changePassword function called:', userId, username);
+    
+    // Set the form values
+    const userIdField = document.getElementById('change_user_id');
+    const usernameField = document.getElementById('change_username');
+    
+    if (userIdField && usernameField) {
+        userIdField.value = userId;
+        usernameField.textContent = username;
+        console.log('Values set successfully');
+    } else {
+        console.error('Could not find form fields');
+        return;
+    }
+    
+    // Clear form fields
+    const newPasswordField = document.getElementById('new_password');
+    const confirmPasswordField = document.getElementById('confirm_password');
+    
+    if (newPasswordField) newPasswordField.value = '';
+    if (confirmPasswordField) confirmPasswordField.value = '';
+    
+    // Clear any previous validation classes
+    if (newPasswordField) {
+        newPasswordField.classList.remove('is-invalid', 'is-valid');
+    }
+    if (confirmPasswordField) {
+        confirmPasswordField.classList.remove('is-invalid', 'is-valid');
+    }
+    
+    console.log('Password change modal data prepared');
+}
+
+// Toggle password visibility
+document.addEventListener('DOMContentLoaded', function() {
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordField = document.getElementById('new_password');
+    
+    if (togglePassword && passwordField) {
+        togglePassword.addEventListener('click', function() {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+    }
+    
+    // Password confirmation validation
+    const form = document.querySelector('#passwordChangeForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            console.log('Form submission attempted');
+            
+            const password = document.getElementById('new_password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            const passwordField = document.getElementById('new_password');
+            const confirmField = document.getElementById('confirm_password');
+            
+            console.log('Password:', password.length, 'characters');
+            console.log('Confirm Password:', confirmPassword.length, 'characters');
+            
+            let hasErrors = false;
+            
+            // Clear previous errors
+            passwordField.classList.remove('is-invalid', 'is-valid');
+            confirmField.classList.remove('is-invalid', 'is-valid');
+            passwordField.parentElement.parentElement.querySelector('.invalid-feedback').style.display = 'none';
+            confirmField.parentElement.querySelector('.invalid-feedback').style.display = 'none';
+            
+            // Only check if password is not empty
+            if (password.length === 0) {
+                console.log('Password is empty');
+                passwordField.classList.add('is-invalid');
+                passwordField.parentElement.parentElement.querySelector('.invalid-feedback').style.display = 'block';
+                hasErrors = true;
+            } else {
+                passwordField.classList.add('is-valid');
+            }
+            
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                console.log('Passwords do not match');
+                confirmField.classList.add('is-invalid');
+                confirmField.parentElement.querySelector('.invalid-feedback').style.display = 'block';
+                hasErrors = true;
+            } else if (password.length > 0) {
+                confirmField.classList.add('is-valid');
+            }
+            
+            if (hasErrors) {
+                console.log('Form has errors, preventing submission');
+                e.preventDefault();
+                return false;
+            } else {
+                console.log('Form validation passed, submitting...');
+                return true;
+            }
+        });
+    }
+    
+    // Clear validation on input
+    document.getElementById('confirm_password')?.addEventListener('input', function() {
+        const password = document.getElementById('new_password').value;
+        if (this.value === password) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        }
+    });
+});
 
 // Custom delete handler for this page only
 function handleUserDelete(userId, userName) {

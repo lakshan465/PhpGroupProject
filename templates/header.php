@@ -1,6 +1,6 @@
 <?php
 if (!isLoggedIn()) {
-    header('Location: /php/actions/login.php');
+    header('Location: /Mini%20Project%203ii/PhpGroupProject/actions/login.php');
     exit();
 }
 ?>
@@ -52,7 +52,7 @@ if (!isLoggedIn()) {
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item" href="/php/actions/logout.php">
+                            <a class="dropdown-item" href="/Mini%20Project%203ii/PhpGroupProject/actions/logout.php">
                                 <i class="fas fa-sign-out-alt me-2"></i>Logout
                             </a>
                         </li>
@@ -114,7 +114,7 @@ if (!isLoggedIn()) {
                         <?php elseif ($_SESSION['role'] === 'student'): ?>
                             <li class="nav-item">
                                 <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) === 'dashboard.php' && strpos($_SERVER['REQUEST_URI'], 'student') ? 'active' : ''; ?>" 
-                                   href="/php/views/student/dashboard.php">
+                                   href="/Mini%20Project%203ii/PhpGroupProject/views/student/dashboard.php">
                                     <i class="fas fa-graduation-cap"></i>
                                     Dashboard
                                 </a>

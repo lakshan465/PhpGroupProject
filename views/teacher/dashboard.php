@@ -54,6 +54,9 @@ include __DIR__ . '/../../templates/header.php';
                     <a href="manage_quizzes.php" class="btn btn-outline-primary">
                         <i class="fas fa-cog me-1"></i>Manage Quizzes
                     </a>
+                    <a href="student_marks.php" class="btn btn-outline-success">
+                        <i class="fas fa-chart-line me-1"></i>Student Marks
+                    </a>
                 </div>
                 <div class="btn-group">
                     

@@ -1,0 +1,17 @@
+{
+    "name": "quiz-system/php-group-project",
+    "description": "Online Quiz System with PDF Generation",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "tecnickcom/tcpdf": "^6.6",
+        "endroid/qr-code": "^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "QuizSystem\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
